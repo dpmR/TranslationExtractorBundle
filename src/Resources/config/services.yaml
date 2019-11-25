@@ -1,0 +1,5 @@
+services:
+  dpmR\Bundle\TranslationExtractorBundle\Command\:
+    autowire: true
+    resource: '../../Command/*'
+    tags: ['console.command']

@@ -1,5 +1,5 @@
 {
-  "name": "dpmR/translation-extractor-bundle",
+  "name": "dpmr/translation-extractor-bundle",
   "type": "symfony-bundle",
   "description": "Bundle to extract symfony translations",
   "keywords": ["symfony", "bundle", "dpmR", "translation", "translator"],
@@ -14,7 +14,8 @@
   "require": {
     "php":                      "^7.1",
     "symfony/framework-bundle": "^4.0",
-    "symfony/translation":      "^4.0"
+    "symfony/translation":      "^4.0",
+    "phpoffice/phpspreadsheet": "^1.10"
   },
   "autoload": {
     "psr-4": {

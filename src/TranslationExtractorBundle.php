@@ -1,7 +1,7 @@
 <?php
 
 /**
- * (c) Daniel Richardt <@gmail.com>.
+ * (c) Daniel Richardt
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
