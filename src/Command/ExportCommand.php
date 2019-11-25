@@ -18,7 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\Translation\Translator;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Translation\SymfonyStorage\Dumper\XliffDumper;
 
 class ExportCommand extends Command
 {
@@ -63,9 +62,12 @@ class ExportCommand extends Command
     {
         $spreadsheet = new Spreadsheet();
 
-        $activeSheet = 1;
+        $spreadsheet->removeSheetByIndex($spreadsheet->getActiveSheetIndex());
+
+        $activeSheet = 0;
         foreach ($this->container->get('php_translation.locales') as $locale) {
             $sheet = $spreadsheet->createSheet($activeSheet);
+            $sheet->setTitle($locale);
 
             $i = 1;
             foreach (['Domain', 'Original', 'Translation'] as $header) {
@@ -77,6 +79,19 @@ class ExportCommand extends Command
             $domains = $catalogue->getDomains();
 
             $domainMessages = $catalogue->all();
+
+            $fallbackCatalogue = $catalogue->getFallbackCatalogue();
+            if (!empty($fallbackCatalogue)) {
+                $fallbackMessages = $fallbackCatalogue->all();
+
+                foreach ($domains as $domain) {
+                    foreach ($fallbackMessages[$domain] as $key => $fallbackMessage) {
+                        if (!isset($domainMessages[$domain][$key])) {
+                            $domainMessages[$domain][$key] = '';
+                        }
+                    }
+                }
+            }
 
             $row = 2;
             foreach ($domains as $domain) {
@@ -90,6 +105,18 @@ class ExportCommand extends Command
             }
 
             $activeSheet++;
+        }
+
+        foreach ($spreadsheet->getWorksheetIterator() as $worksheet) {
+            $spreadsheet->setActiveSheetIndex($spreadsheet->getIndex($worksheet));
+
+            $sheet = $spreadsheet->getActiveSheet();
+            $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
+            $cellIterator->setIterateOnlyExistingCells(true);
+
+            foreach ($cellIterator as $cell) {
+                $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+            }
         }
 
         $writer = new Xlsx($spreadsheet);
