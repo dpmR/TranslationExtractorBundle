@@ -15,6 +15,7 @@
     "php":                      "^7.1",
     "symfony/framework-bundle": "^4.0",
     "symfony/translation":      "^4.0",
+    "php-translation/symfony-bundle": "^0.9.1",
     "phpoffice/phpspreadsheet": "^1.10"
   },
   "autoload": {
